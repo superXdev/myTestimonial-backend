@@ -16,7 +16,7 @@ app.use(express.static('public'));
 // Testing database connection 
 try {
     await db.authenticate();
-    db.sync();
+    db.sync({ force: true });
 } catch (error) {
     throw Error(error.message);
 }
