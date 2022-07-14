@@ -13,19 +13,12 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static('public'));
  
-// Testing database connection 
-try {
-    await db.authenticate();
-    db.sync({ force: true });
-} catch (error) {
-    throw Error(error.message);
-}
- 
 // use router
 app.use(Router);
  
 // listen on port
 app.listen(5000, async () => {
+    db.sync({ force: true });
     const isSettingExists = await Setting.count({ where: { id: 1 } });
 
     if(!isSettingExists) {
