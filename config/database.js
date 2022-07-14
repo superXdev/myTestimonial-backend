@@ -7,7 +7,10 @@ const db = new Sequelize(process.env.DB_DATABASE, process.env.DB_USERNAME, proce
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     dialect: process.env.DB_CONNECTION,
-    logging: false
+    logging: false,
+    dialectOptions: {
+      ssl: process.env.DB_SSL
+    }
 });
 
 export default db;
