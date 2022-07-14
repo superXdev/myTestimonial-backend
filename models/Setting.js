@@ -9,11 +9,11 @@ const Setting = db.define('settings', {
   // Define attributes
   adminUsername: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   chatId: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: true
   },
   serverStarted: {
     type: DataTypes.STRING,
