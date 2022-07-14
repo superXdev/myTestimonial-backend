@@ -28,7 +28,11 @@ app.use(Router);
 app.listen(5000, async () => {
     const isSettingExists = await Setting.count({ where: { id: 1 } });
 
-    if(isSettingExists) {
+    if(!isSettingExists) {
+        await Setting.create({
+            serverStarted: Date.now()
+        });
+    } else {
         await Setting.update({ serverStarted: Date.now() }, { where: { id: 1 } })
     }
 
