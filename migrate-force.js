@@ -7,6 +7,7 @@ import db from "./config/database.js";
         await Setting.create({ 
             serverStarted: Date.now() 
         });
+        console.log('Done');
     } catch (error) {
         throw Error(error.message);
     }
