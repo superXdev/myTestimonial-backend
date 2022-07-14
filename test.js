@@ -1,27 +1,15 @@
-import localtunnel from 'localtunnel';
-import { spawn } from "child_process";
 
-(async () => {
-  const tunnel = await localtunnel({ port: 3000 });
+const getStar = (total) => {
+    let stars = ''
+    for (var i = total; i > 0; i--) {
+        stars = stars + '⭐'
+    }
 
-  // the assigned public url for your tunnel
-  // i.e. https://abcdefgjhij.localtunnel.me
-  
-  const node = spawn('npx nodemon index ' + tunnel.url);
+    for (var i = 5 - total; i > 0; i--) {
+        stars = stars + '-'
+    }
 
-  node.stdout.on("data", data => {
-      console.log(`stdout: ${data}`);
-  });
+    return stars
+}
 
-  node.stderr.on("data", data => {
-      console.log(`stderr: ${data}`);
-  });
-
-  node.on('error', (error) => {
-      console.log(`error: ${error.message}`);
-  });
-
-  tunnel.on('close', () => {
-    console.log('closed')
-  });
-})();
+console.log(getStar(3))

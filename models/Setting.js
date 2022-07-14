@@ -8,11 +8,15 @@ const { DataTypes } = Sequelize;
 const Setting = db.define('settings', {
   // Define attributes
   adminUsername: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
     allowNull: false
   },
   chatId: {
     type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  serverStarted: {
+    type: DataTypes.STRING,
     allowNull: false
   }
 },{

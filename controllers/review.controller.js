@@ -12,8 +12,6 @@ import { sendReview } from '../bot.js'
 Profile.hasOne(Review)
 Review.belongsTo(Profile)
 
-db.sync()
-
 const getPagination = (page, size) => {
     const limit = size ? +size : 6;
     const offset = page ? page * limit : 0;
@@ -41,10 +39,11 @@ export const getReviews = async (req, res) => {
                 [db.fn('sum', db.col('rating')), 'totalRating']
             ],
             where: { accepted: true }
-        })
-        const totalPages = Math.floor(reviews.count / limit)
-        const currentPage = req.query.page ? +req.query.page : 0
-        const avgRating = sum[0].dataValues.totalRating / reviews.count
+        });
+
+        const totalPages = Math.floor(reviews.count / limit);
+        const currentPage = req.query.page ? +req.query.page : 0;
+        const avgRating = sum[0].dataValues.totalRating / reviews.count;
 
         res.send({
             status: 'OK',
