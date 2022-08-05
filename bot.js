@@ -2,7 +2,7 @@ require('dotenv').config();
 const { Telegraf, Markup } = require('telegraf');
 const localtunnel = require('localtunnel');
 const TimeAgo = require('javascript-time-ago');
-const en = 'javascript-time-ago/locale/en';
+const en = require('javascript-time-ago/locale/en');
 
 const { Setting, Review, sequelize: db } = require("./models/index.js");
 
@@ -124,6 +124,10 @@ bot.on('callback_query', (ctx) => {
 
     if(data.includes('Reject')) {
         ctx.reply(`[${data[1]}] Review rejected ❌`);
+        Review.destroy({
+            where: { id: data[1] }
+        });
+
         return ctx.deleteMessage();
     }
 
