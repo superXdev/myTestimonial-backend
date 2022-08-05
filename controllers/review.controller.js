@@ -1,13 +1,10 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
-import fs from 'fs';
-import axios from 'axios';
-import crypto from 'crypto'
+require('dotenv').config();
+const fs = require('fs');
+const axios = require('axios');
+const crypto = require('crypto');
 
-import Profile from "../models/Profile.js";
-import Review from "../models/Review.js";
-import db from "../config/database.js";
-import { sendReview } from '../bot.js'
+const { Profile, Review, sequelize: db } = require("../models/index.js");
+const { sendReview } = require('../bot.js');
 
 Profile.hasOne(Review)
 Review.belongsTo(Profile)
@@ -19,7 +16,7 @@ const getPagination = (page, size) => {
 }
  
 // Get all Profiles
-export const getReviews = async (req, res) => {
+const getReviews = async (req, res) => {
     try {
         const { limit, offset } = getPagination(req.query.page, req.query.size)
         const reviews = await Review.findAndCountAll({
@@ -62,7 +59,7 @@ export const getReviews = async (req, res) => {
 }
  
 // Create a new Profile
-export const createReview = async (req, res) => {
+const createReview = async (req, res) => {
     try {
         const profile = await Profile.create({
             fullName: req.body.fullName,
@@ -76,7 +73,7 @@ export const createReview = async (req, res) => {
         const review = await Review.create({
             comment: req.body.reviews.comment, 
             rating: req.body.reviews.rating, 
-            profileId: profile.id
+            ProfileId: profile.id
         });
 
         await sendReview(review.id, profile.fullName, profile.position, review.comment, review.rating);
@@ -93,7 +90,7 @@ export const createReview = async (req, res) => {
     }
 }
 
-export const uploadPhoto = async (req, res) => {
+const uploadPhoto = async (req, res) => {
     try {
         if(process.env.FILE_STORAGE === 'local') {
             const fileName = crypto.createHash('md5').update(Date.now().toString()).digest('hex').substr(15)
@@ -126,4 +123,10 @@ export const uploadPhoto = async (req, res) => {
         });
     }
     
+}
+
+module.exports = {
+    getReviews,
+    uploadPhoto,
+    createReview
 }

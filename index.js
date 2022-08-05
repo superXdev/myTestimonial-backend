@@ -1,10 +1,9 @@
-import express from "express";
-import cors from "cors";
+const express = require('express');
+const cors = require('cors');
 
-import db from "./config/database.js";
-import Router from "./routes/api.js";
-import Setting from "./models/Setting.js";
-import { bot, secretPath, BASE_URL } from './bot.js';
+const Router = require("./routes/api.js");
+const { Setting } = require("./models/index.js");
+const { bot, secretPath, BASE_URL } = require('./bot.js');
  
 const app = express();
 
@@ -18,18 +17,8 @@ app.use(Router);
  
 // listen on port
 app.listen(5000, async () => {
-    db.sync({ force: true });
-    const isSettingExists = await Setting.count({ where: { id: 1 } });
-
-    if(!isSettingExists) {
-        await Setting.create({
-            serverStarted: Date.now()
-        });
-    } else {
-        await Setting.update({ serverStarted: Date.now() }, { where: { id: 1 } })
-    }
+    await Setting.update({ serverStarted: Date.now() }, { where: { id: 1 } });
 
     console.log(`Server running at 
-Local: http://localhost:5000
-Public: ${BASE_URL}`)
+Local: http://localhost:5000`);
 });

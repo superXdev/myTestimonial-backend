@@ -1,21 +1,14 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
-import { Telegraf, Markup } from 'telegraf';
-import localtunnel from 'localtunnel';
-import TimeAgo from 'javascript-time-ago';
-import en from 'javascript-time-ago/locale/en';
+require('dotenv').config();
+const { Telegraf, Markup } = require('telegraf');
+const localtunnel = require('localtunnel');
+const TimeAgo = require('javascript-time-ago');
+const en = 'javascript-time-ago/locale/en';
 
-import Setting from "./models/Setting.js";
-import Review from "./models/Review.js";
-import db from "./config/database.js";
+const { Setting, Review, sequelize: db } = require("./models/index.js");
 
-const tunnel = await localtunnel({ port: 5000 });
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
-export const BASE_URL = process.env.APP_MODE === 'production' 
-                    ? process.env.BASE_URL 
-                    : tunnel.url;
 
 if (TOKEN === undefined) {
   throw new Error('Bot token must be provided!')
@@ -25,7 +18,7 @@ if (TOKEN === ADMIN_USERNAME) {
   throw new Error('Admin username must be provided!')
 }
 
-export const bot = new Telegraf(TOKEN);
+const bot = new Telegraf(TOKEN);
 
 // register admin when start bot
 bot.start(async (ctx) => {
@@ -90,7 +83,7 @@ Uptime server : ${uptime}
         `, { parse_mode: 'HTML' });
 });
 
-export const sendReview = async (id, fullName, position, message, rating) => {
+const sendReview = async (id, fullName, position, message, rating) => {
     // function to get star as string
     const getStar = (total) => {
         let stars = ''
@@ -142,7 +135,14 @@ bot.on('callback_query', (ctx) => {
     ctx.deleteMessage();
 });
 
-
-export const secretPath = `/telegraf/${bot.secretPathComponent()}`;
+const BASE_URL = process.env.BASE_URL;
+const secretPath = `/telegraf/${bot.secretPathComponent()}`;
 
 bot.telegram.setWebhook(`${BASE_URL}${secretPath}`);
+
+
+module.exports = {
+    bot,
+    secretPath,
+    sendReview
+}

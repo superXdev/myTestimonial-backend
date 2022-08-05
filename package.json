@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "node index",
     "dev": "nodemon index",
-    "server": "npx lt -p 5000"
+    "server": "npx lt -p 5000",
+    "migrate": "npx sequelize-cli db:migrate",
+    "seed": "npx sequelize-cli db:seed:all"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,7 @@
     "telegraf": "^4.8.5"
   },
   "devDependencies": {
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "sequelize-cli": "^6.4.1"
   }
 }
