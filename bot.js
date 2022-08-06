@@ -4,8 +4,10 @@ const localtunnel = require('localtunnel');
 const TimeAgo = require('javascript-time-ago');
 const en = require('javascript-time-ago/locale/en');
 
-const { Setting, Review, sequelize: db } = require("./models/index.js");
+const { Setting, Profile, Review, sequelize: db } = require("./models/index.js");
 
+Profile.hasOne(Review);
+Review.belongsTo(Profile);
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
@@ -118,15 +120,20 @@ Rating: ${getStar(rating)}
     });
 }
 
-bot.on('callback_query', (ctx) => {
+bot.on('callback_query', async (ctx) => {
     let data = ctx.callbackQuery.data;
     data = data.split('-');
 
     if(data.includes('Reject')) {
-        ctx.reply(`[${data[1]}] Review rejected ❌`);
-        Review.destroy({
-            where: { id: data[1] }
+        const review = await Review.findByPk(data[1]);
+        await Review.destroy({
+            where: { id: data[1] },
         });
+        await Profile.destroy({
+            where: { id: review.ProfileId }
+        });
+
+        ctx.reply(`[${data[1]}] Review rejected ❌`);
 
         return ctx.deleteMessage();
     }

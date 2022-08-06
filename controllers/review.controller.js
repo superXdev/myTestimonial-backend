@@ -2,12 +2,13 @@ require('dotenv').config();
 const fs = require('fs');
 const axios = require('axios');
 const crypto = require('crypto');
+const { validationResult } = require('express-validator');
 
 const { Profile, Review, sequelize: db } = require("../models/index.js");
 const { sendReview } = require('../bot.js');
 
-Profile.hasOne(Review)
-Review.belongsTo(Profile)
+Profile.hasOne(Review);
+Review.belongsTo(Profile);
 
 const getPagination = (page, size) => {
     const limit = size ? +size : 6;
@@ -61,6 +62,12 @@ const getReviews = async (req, res) => {
 // Create a new Profile
 const createReview = async (req, res) => {
     try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+
         const profile = await Profile.create({
             fullName: req.body.fullName,
             position: req.body.position,
@@ -83,7 +90,7 @@ const createReview = async (req, res) => {
             "message": "Testimony successfully submitted & will be accepted soon"
         });
     } catch (err) {
-        res.send({
+        res.status(400).send({
             status: 'failed',
             message: err.message
         });
@@ -92,6 +99,21 @@ const createReview = async (req, res) => {
 
 const uploadPhoto = async (req, res) => {
     try {
+        if(req.file.mimetype !== 'image/jpeg' && req.file.mimetype !== 'image/png') {
+            return res.status(400).send({
+                status: 'failed',
+                message: 'File type are not allowed'
+            });
+        }
+
+        const sizeInMb = req.file.size / 1024 / 1024;
+        if(sizeInMb > 1) {
+            return res.status(400).send({
+                status: 'failed',
+                message: 'Maximum image size is 1 MB'
+            });
+        }
+
         if(process.env.FILE_STORAGE === 'local') {
             const fileName = crypto.createHash('md5').update(Date.now().toString()).digest('hex').substr(15)
                 + req.file.originalname 
@@ -117,7 +139,7 @@ const uploadPhoto = async (req, res) => {
 
         res.send(result.data.data.thumb.url);
     } catch (err) {
-        res.send({
+        res.status(400).send({
             status: 'failed',
             message: err.message
         });
