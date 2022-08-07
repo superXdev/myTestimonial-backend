@@ -64,9 +64,8 @@ const createReview = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
+            throw Error(JSON.stringify(errors.array()));
         }
-
 
         const profile = await Profile.create({
             fullName: req.body.fullName,
@@ -90,9 +89,18 @@ const createReview = async (req, res) => {
             "message": "Testimony successfully submitted & will be accepted soon"
         });
     } catch (err) {
+        const isJson = (json) => {
+            try {
+                JSON.parse(json);
+                return true;
+            } catch {
+                return false;
+            }
+        }
+
         res.status(400).send({
             status: 'failed',
-            message: err.message
+            message: isJson(err.message) ? JSON.parse(err.message) : err.message
         });
     }
 }
@@ -100,18 +108,12 @@ const createReview = async (req, res) => {
 const uploadPhoto = async (req, res) => {
     try {
         if(req.file.mimetype !== 'image/jpeg' && req.file.mimetype !== 'image/png') {
-            return res.status(400).send({
-                status: 'failed',
-                message: 'File type are not allowed'
-            });
+            throw Error('File type are not allowed');
         }
 
         const sizeInMb = req.file.size / 1024 / 1024;
         if(sizeInMb > 1) {
-            return res.status(400).send({
-                status: 'failed',
-                message: 'Maximum image size is 1 MB'
-            });
+            throw Error('Maximum image size is 1MB');
         }
 
         if(process.env.FILE_STORAGE === 'local') {
