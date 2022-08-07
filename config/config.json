@@ -1,4 +1,11 @@
 {
+  "base_url": "",
+  "telegram_username": "",
+  "bot_secret": "",
+  "file": {
+    "storage": "local",
+    "imgbb_key": ""
+  },
   "development": {
     "username": "root",
     "password": null,
