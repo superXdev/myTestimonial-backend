@@ -1,9 +1,9 @@
-require('dotenv').config();
 const fs = require('fs');
 const axios = require('axios');
 const crypto = require('crypto');
 const { validationResult } = require('express-validator');
 
+const config = require('../config/config.json');
 const { Profile, Review, sequelize: db } = require("../models/index.js");
 const { sendReview } = require('../bot.js');
 
@@ -116,7 +116,7 @@ const uploadPhoto = async (req, res) => {
             throw Error('Maximum image size is 1MB');
         }
 
-        if(process.env.FILE_STORAGE === 'local') {
+        if(config.file.storage === 'local') {
             const fileName = crypto.createHash('md5').update(Date.now().toString()).digest('hex').substr(15)
                 + req.file.originalname 
 
@@ -124,7 +124,7 @@ const uploadPhoto = async (req, res) => {
                 if (err) throw Error('Cannot write file locally');
             });
             
-            return res.send(process.env.BASE_URL + `/photo/${fileName}`);
+            return res.send(config.base_url + `/photo/${fileName}`);
         }
 
         const base64Data = req.file.buffer.toString('base64');
@@ -134,7 +134,7 @@ const uploadPhoto = async (req, res) => {
 
         const result = await axios({
             method: 'post',
-            url: `https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API_KEY}`,
+            url: `https://api.imgbb.com/1/upload?key=${config.file.imgbb_key}`,
             data: formData,
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         });

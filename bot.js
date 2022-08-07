@@ -1,16 +1,16 @@
-require('dotenv').config();
 const { Telegraf, Markup } = require('telegraf');
 const localtunnel = require('localtunnel');
 const TimeAgo = require('javascript-time-ago');
 const en = require('javascript-time-ago/locale/en');
 
+const config = require('./config/config.json');
 const { Setting, Profile, Review, sequelize: db } = require("./models/index.js");
 
 Profile.hasOne(Review);
 Review.belongsTo(Profile);
 
-const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME;
+const TOKEN = config.bot_secret;
+const ADMIN_USERNAME = config.telegram_username;
 
 if (TOKEN === undefined) {
   throw new Error('Bot token must be provided!')
@@ -163,7 +163,7 @@ bot.on('callback_query', async (ctx) => {
     }
 });
 
-const BASE_URL = process.env.BASE_URL;
+const BASE_URL = config.base_url;
 const secretPath = `/telegraf/${bot.secretPathComponent()}`;
 
 bot.telegram.setWebhook(`${BASE_URL}${secretPath}`);

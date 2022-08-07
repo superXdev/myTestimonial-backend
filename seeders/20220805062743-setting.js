@@ -1,10 +1,11 @@
 'use strict';
-require('dotenv').config();
+
+const config = require('./config/config.json');
 
 module.exports = {
   async up (queryInterface, Sequelize) {
     return queryInterface.bulkInsert('Settings', [{
-      adminUsername: process.env.ADMIN_USERNAME,
+      adminUsername: config.telegram_username,
       chatId: 0,
       createdAt: new Date(),
       updatedAt: new Date()
