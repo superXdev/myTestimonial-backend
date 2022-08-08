@@ -28,7 +28,9 @@ router.post(
         .trim().escape(),
     body('website').trim().escape(),
     body('linkedin').trim().escape(),
-    body('photo').trim().escape(),
+    body('photo')
+        .isURL().withMessage('Not URL!')
+        .bail(),
     // review input
     body('reviews.comment')
         .not().isEmpty().withMessage('Comment can\'t be empty')
