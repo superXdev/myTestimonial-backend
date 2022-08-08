@@ -26,9 +26,6 @@ router.post(
         .isEmpty().withMessage('Position can\'t be empty')
         .bail()
         .trim().escape(),
-    body('photo')
-        .isURL().withMessage('Not URL!')
-        .bail(),
     // review input
     body('reviews.comment')
         .not().isEmpty().withMessage('Comment can\'t be empty')
