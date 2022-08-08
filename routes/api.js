@@ -26,12 +26,6 @@ router.post(
         .isEmpty().withMessage('Position can\'t be empty')
         .bail()
         .trim().escape(),
-    body('website')
-        .isURL().withMessage('Not URL!')
-        .bail(),
-    body('linkedin')
-        .isURL().withMessage('Not URL!')
-        .bail(),
     body('photo')
         .isURL().withMessage('Not URL!')
         .bail(),
