@@ -118,7 +118,6 @@ const uploadPhoto = async (req, res) => {
 
         if(config.file.storage === 'local') {
             const fileName = crypto.createHash('md5').update(Date.now().toString()).digest('hex').substr(15)
-                + req.file.originalname 
 
             fs.writeFileSync(`${process.cwd()}/public/photo/${fileName}`, req.file.buffer, function (err) {
                 if (err) throw Error('Cannot write file locally');
