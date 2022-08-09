@@ -26,7 +26,8 @@ cp config/config.bak config/config.json
 # set database connection, telegram username
 ```
 
-### 4. By default, the file storage is local. You can change it to imgbb service by entering API key into attributes `imgbb_key`
+### 4. By default, the file storage is local
+You can change it to imgbb service by entering API key into attributes `imgbb_key`
 ### 5. Run development server (using nodemon)
 ```sh
 npm run dev
@@ -36,6 +37,9 @@ npm run dev
 ```sh
 npm start
 ```
+
+### 7. Register your telegram
+You need to register your telegram account in telegram bot by start the bot after server started
 
 ## License
 
